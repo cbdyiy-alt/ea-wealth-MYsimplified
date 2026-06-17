@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Meridian Bank MY — SmartGrow</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;background:#F1EFE8;display:flex;justify-content:center;align-items:center;min-height:100vh;padding:2rem}
+.pw{display:flex;flex-direction:column;align-items:center}
+.sr{display:flex;align-items:center;justify-content:center;gap:6px;margin-bottom:14px}
+.sd{width:9px;height:9px;border-radius:50%;background:#D3D1C7;cursor:pointer;transition:background 0.2s}
+.sd.a{background:#A100FF}
+.sl{font-size:13px;color:#888780;margin-left:10px;font-weight:500}
+.ph{width:340px;min-height:660px;border:1.5px solid #B4B2A9;border-radius:30px;overflow:hidden;background:#FAFAFA;position:relative;box-shadow:0 8px 30px rgba(0,0,0,0.08)}
+.sb{display:flex;justify-content:space-between;align-items:center;padding:10px 22px 4px;font-size:11px;color:#5F5E5A;font-weight:500}
+.sc{display:none;padding:0 18px 18px;overflow-y:auto;max-height:560px}
+.sc::-webkit-scrollbar{width:0;display:none}
+.sc.a{display:block}
+.bnav{display:flex;justify-content:space-around;padding:10px 0;border-top:0.5px solid #D3D1C7;background:#FAFAFA;position:absolute;bottom:0;left:0;right:0}
+.bni{display:flex;flex-direction:column;align-items:center;gap:2px;font-size:10px;color:#888780}
+.bni.sel{color:#A100FF;font-weight:500}
+.hdr{display:flex;align-items:center;gap:8px;padding:10px 0 14px}
+.ac{background:#fff;border:0.5px solid #D3D1C7;border-radius:10px;padding:12px;margin-bottom:10px}
+.bp{background:#A100FF;color:#fff;border:none;border-radius:8px;padding:12px 0;width:100%;font-size:14px;font-weight:600;cursor:pointer;transition:opacity 0.15s;font-family:inherit;letter-spacing:0.01em}
+.bp:hover{opacity:0.85}
+
+/* Nudge card */
+.nudge{background:linear-gradient(135deg,#F5F0FF 0%,#EDE6FF 100%);border:1.5px solid #A100FF;border-radius:12px;padding:16px;margin-bottom:10px;cursor:pointer;transition:opacity 0.15s}
+.nudge:hover{opacity:0.9}
+
+/* Earnings comparison */
+.earn-compare{display:flex;gap:10px;margin:12px 0}
+.earn-box{flex:1;border-radius:10px;padding:10px;text-align:center}
+.earn-box.old{background:#F1EFE8}
+.earn-box.new{background:#E1F5EE}
+
+/* Method cards */
+.method-card{background:#fff;border:1.5px solid #E8E6E0;border-radius:12px;padding:14px;margin-bottom:10px;cursor:pointer;transition:all 0.2s;position:relative}
+.method-card.on{border-color:#A100FF;background:#FAFAFF}
+.method-toggle{position:absolute;top:14px;right:14px;width:42px;height:24px;border-radius:12px;background:#D3D1C7;transition:background 0.2s;cursor:pointer}
+.method-toggle.on{background:#A100FF}
+.method-toggle::after{content:'';position:absolute;top:2px;left:2px;width:20px;height:20px;border-radius:50%;background:#fff;transition:transform 0.2s;box-shadow:0 1px 3px rgba(0,0,0,0.15)}
+.method-toggle.on::after{transform:translateX(18px)}
+
+/* Slider */
+.slider-wrap{margin:16px 0 8px}
+.slider-track{position:relative;height:6px;background:linear-gradient(90deg,#E1F5EE 0%,#EEEDFE 50%,#FAEEDA 100%);border-radius:3px}
+.slider-labels{display:flex;justify-content:space-between;margin-top:8px}
+.slider-labels span{font-size:11px;color:#888780}
+input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:6px;background:transparent;position:absolute;top:0;left:0;margin:0;cursor:pointer}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:24px;height:24px;border-radius:50%;background:#A100FF;border:3px solid #fff;box-shadow:0 2px 6px rgba(0,0,0,0.15);cursor:pointer}
+
+/* Projection */
+.proj-block{background:#F5F0FF;border-radius:10px;padding:14px;margin:12px 0;text-align:center}
+
+/* Sweep floor */
+.floor-row{display:flex;align-items:center;gap:8px;margin:10px 0}
+.floor-btn{width:36px;height:36px;border-radius:50%;border:1.5px solid #D3D1C7;background:#fff;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;color:#2C2C2A;font-family:inherit;transition:border-color 0.15s}
+.floor-btn:hover{border-color:#A100FF}
+.floor-val{flex:1;text-align:center;font-size:20px;font-weight:600;color:#2C2C2A}
+
+/* Streak */
+.streak-row{display:flex;gap:8px;justify-content:center;margin:16px 0}
+.streak-dot{width:56px;display:flex;flex-direction:column;align-items:center;gap:4px}
+.streak-circle{width:44px;height:44px;border-radius:50%;border:2px solid #E8E6E0;display:flex;align-items:center;justify-content:center;font-size:18px;background:#FAFAFA;transition:all 0.3s}
+.streak-circle.done{border-color:#A100FF;background:#F5F0FF}
+.streak-circle.bonus{border-color:#1D9E75;background:#E1F5EE}
+.streak-line{width:20px;height:2px;background:#E8E6E0;align-self:center}
+
+/* Social proof */
+.social-bar{display:flex;align-items:center;gap:8px;background:#F1EFE8;border-radius:8px;padding:10px 12px;margin:10px 0}
+.social-dots{display:flex}
+.social-dots span{width:22px;height:22px;border-radius:50%;border:2px solid #FAFAFA;display:flex;align-items:center;justify-content:center;font-size:10px;margin-left:-6px}
+.social-dots span:first-child{margin-left:0}
+
+/* Confetti animation for confirmation */
+@keyframes popIn{0%{transform:scale(0.5);opacity:0}60%{transform:scale(1.05)}100%{transform:scale(1);opacity:1}}
+.pop-in{animation:popIn 0.4s ease-out forwards}
+
+/* Success icon */
+.success-ring{width:64px;height:64px;border-radius:50%;background:linear-gradient(135deg,#A100FF,#C77DFF);display:flex;align-items:center;justify-content:center;margin:0 auto 12px}
+</style>
+</head>
+<body>
+
+<div class="pw">
+  <div class="sr">
+    <div class="sd a" onclick="goTo(0)"></div>
+    <div class="sd" onclick="goTo(1)"></div>
+    <div class="sd" onclick="goTo(2)"></div>
+    <div class="sd" onclick="goTo(3)"></div>
+    <span class="sl" id="sL">1 / 4 — Dashboard</span>
+  </div>
+
+  <div class="ph">
+    <div class="sb"><span>9:41</span><span>&#9679;&#9679;&#9679;&#9679;</span></div>
+
+    <!-- SCREEN 1: Dashboard with earnings gap nudge -->
+    <div class="sc a" id="s0">
+      <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 0 14px">
+        <div>
+          <p style="font-size:12px;color:#888780">Selamat pagi</p>
+          <p style="font-size:17px;font-weight:600;color:#2C2C2A">Aisha R.</p>
+        </div>
+        <div style="width:34px;height:34px;border-radius:50%;background:#E8E6E0;display:flex;align-items:center;justify-content:center"><span style="font-size:15px">&#128276;</span></div>
+      </div>
+
+      <div class="ac">
+        <p style="font-size:11px;color:#888780">Salary saver account</p>
+        <p style="font-size:23px;font-weight:600;color:#2C2C2A;margin:4px 0">RM 8,240.00</p>
+        <div style="display:flex;gap:16px;margin-top:6px">
+          <span style="font-size:11px;color:#888780">&#8595; +RM 4,200 Jun</span>
+          <span style="font-size:11px;color:#888780">Interest 1.50% p.a.</span>
+        </div>
+      </div>
+
+      <div class="nudge" onclick="goTo(1)">
+        <p style="font-size:11px;font-weight:600;color:#A100FF;margin-bottom:8px">&#127793; Your money could grow faster</p>
+        <div class="earn-compare">
+          <div class="earn-box old">
+            <p style="font-size:10px;color:#888780">Last month you earned</p>
+            <p style="font-size:20px;font-weight:600;color:#5F5E5A">RM 10.30</p>
+            <p style="font-size:10px;color:#888780">savings interest</p>
+          </div>
+          <div class="earn-box new">
+            <p style="font-size:10px;color:#085041">With SmartGrow</p>
+            <p style="font-size:20px;font-weight:600;color:#085041">RM 41.20</p>
+            <p style="font-size:10px;color:#085041">potential earnings</p>
+          </div>
+        </div>
+        <p style="font-size:12px;color:#5F5E5A;line-height:1.5;margin-bottom:10px">Turn on SmartGrow and your spare change starts working — automatically, from as little as RM 10.</p>
+        <div style="display:flex;align-items:center;justify-content:center;background:#A100FF;border-radius:8px;padding:10px">
+          <span style="font-size:13px;font-weight:600;color:#fff">Learn more about SmartGrow</span>
+        </div>
+      </div>
+
+      <div class="ac">
+        <div style="display:flex;justify-content:space-between;align-items:center">
+          <div><p style="font-size:11px;color:#888780">Current account</p><p style="font-size:16px;font-weight:600;color:#2C2C2A">RM 1,430.20</p></div>
+          <span style="font-size:14px;color:#B4B2A9">&#8250;</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- SCREEN 2: SmartGrow setup — methods + comfort slider -->
+    <div class="sc" id="s1">
+      <div class="hdr">
+        <span style="font-size:18px;color:#2C2C2A;cursor:pointer" onclick="goTo(0)">&#8249;</span>
+        <p style="font-size:15px;font-weight:600;color:#2C2C2A">Set up SmartGrow</p>
+      </div>
+
+      <p style="font-size:13px;color:#5F5E5A;line-height:1.5;margin-bottom:14px">We invest your spare money automatically in a simple, diversified fund. You choose how much and how — we handle the rest.</p>
+
+      <!-- Method 1: Round-ups -->
+      <div class="method-card on" id="mc0" onclick="toggleMethod(0)">
+        <div class="method-toggle on" id="mt0"></div>
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:6px;padding-right:50px">
+          <span style="font-size:20px">&#128179;</span>
+          <p style="font-size:14px;font-weight:600;color:#2C2C2A">Round-up my spending</p>
+        </div>
+        <p style="font-size:12px;color:#5F5E5A;line-height:1.45;padding-right:50px">Every card purchase gets rounded up to the nearest ringgit. The spare change goes into SmartGrow.</p>
+        <div style="background:#F5F0FF;border-radius:6px;padding:8px 10px;margin-top:8px;display:flex;justify-content:space-between;align-items:center">
+          <span style="font-size:11px;color:#5F5E5A">Based on your spending</span>
+          <span style="font-size:12px;font-weight:600;color:#A100FF">~RM 85/month</span>
+        </div>
+      </div>
+
+      <!-- Method 2: Salary sweep -->
+      <div class="method-card" id="mc1" onclick="toggleMethod(1)">
+        <div class="method-toggle" id="mt1"></div>
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:6px;padding-right:50px">
+          <span style="font-size:20px">&#128176;</span>
+          <p style="font-size:14px;font-weight:600;color:#2C2C2A">Sweep after salary</p>
+        </div>
+        <p style="font-size:12px;color:#5F5E5A;line-height:1.45;padding-right:50px">Keep a floor in your saver account. Anything above it moves to SmartGrow on salary day.</p>
+        <div id="sweepDetail" style="display:none">
+          <p style="font-size:11px;color:#888780;margin:10px 0 6px">Keep at least this much in my saver</p>
+          <div class="floor-row">
+            <button class="floor-btn" onclick="adjFloor(-500);event.stopPropagation()">−</button>
+            <div class="floor-val" id="floorVal">RM 5,000</div>
+            <button class="floor-btn" onclick="adjFloor(500);event.stopPropagation()">+</button>
+          </div>
+          <div style="background:#F5F0FF;border-radius:6px;padding:8px 10px;display:flex;justify-content:space-between;align-items:center">
+            <span style="font-size:11px;color:#5F5E5A">This month's sweep</span>
+            <span style="font-size:12px;font-weight:600;color:#A100FF" id="sweepAmt">~RM 3,240</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Comfort slider -->
+      <div style="margin-top:14px">
+        <p style="font-size:13px;font-weight:600;color:#2C2C2A;margin-bottom:2px">How should we invest it?</p>
+        <p style="font-size:11px;color:#888780;margin-bottom:4px">Slide to set your comfort level. We handle the mix.</p>
+        <div class="slider-wrap">
+          <div class="slider-track" style="position:relative">
+            <input type="range" min="0" max="2" value="1" step="1" id="comfortSlider" oninput="updateComfort()">
+          </div>
+          <div class="slider-labels">
+            <span>&#128524; Steady</span>
+            <span>&#9878;&#65039; Balanced</span>
+            <span>&#128640; Adventurous</span>
+          </div>
+        </div>
+        <div style="text-align:center;margin-top:4px">
+          <p style="font-size:12px;color:#5F5E5A" id="comfortDesc">A balanced mix — some growth, some stability</p>
+          <p style="font-size:11px;color:#A100FF;font-weight:500" id="comfortRate">Target: 6 – 8% p.a.</p>
+        </div>
+      </div>
+
+      <!-- Projection -->
+      <div class="proj-block">
+        <p style="font-size:11px;color:#888780">Your estimated SmartGrow in 12 months</p>
+        <p style="font-size:26px;font-weight:600;color:#A100FF;margin:4px 0" id="projTotal">RM 1,100</p>
+        <p style="font-size:11px;color:#5F5E5A" id="projBreak">RM 1,020 invested + RM 80 returns</p>
+      </div>
+
+      <button class="bp" onclick="goTo(2)">Turn on SmartGrow</button>
+      <p style="font-size:10px;color:#888780;text-align:center;margin-top:8px">No lock-in. Withdraw anytime. Minimum RM 10.</p>
+    </div>
+
+    <!-- SCREEN 3: Quick review before confirmation -->
+    <div class="sc" id="s2">
+      <div class="hdr">
+        <span style="font-size:18px;color:#2C2C2A;cursor:pointer" onclick="goTo(1)">&#8249;</span>
+        <p style="font-size:15px;font-weight:600;color:#2C2C2A">Review your plan</p>
+      </div>
+
+      <div style="background:#fff;border:0.5px solid #D3D1C7;border-radius:12px;padding:16px;margin-bottom:14px">
+        <div style="display:flex;justify-content:space-between;align-items:center;padding-bottom:12px;border-bottom:0.5px solid #E8E6E0;margin-bottom:12px">
+          <span style="font-size:13px;color:#888780">SmartGrow plan</span>
+          <span style="font-size:13px;font-weight:600;color:#A100FF" id="revComfort">&#9878;&#65039; Balanced</span>
+        </div>
+
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+          <div style="display:flex;align-items:center;gap:8px">
+            <span style="font-size:16px">&#128179;</span>
+            <span style="font-size:13px;color:#2C2C2A">Round-ups</span>
+          </div>
+          <span style="font-size:13px;font-weight:600;color:#2C2C2A" id="revRound">~RM 85/mo</span>
+        </div>
+
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px" id="revSweepRow" style="display:none">
+          <div style="display:flex;align-items:center;gap:8px">
+            <span style="font-size:16px">&#128176;</span>
+            <span style="font-size:13px;color:#2C2C2A">Salary sweep</span>
+          </div>
+          <span style="font-size:13px;font-weight:600;color:#2C2C2A" id="revSweep">Off</span>
+        </div>
+
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+          <div style="display:flex;align-items:center;gap:8px">
+            <span style="font-size:16px">&#128200;</span>
+            <span style="font-size:13px;color:#2C2C2A">Target return</span>
+          </div>
+          <span style="font-size:13px;font-weight:600;color:#2C2C2A" id="revRate">6 – 8% p.a.</span>
+        </div>
+
+        <div style="background:#E1F5EE;border-radius:8px;padding:10px;margin-top:4px">
+          <div style="display:flex;justify-content:space-between;align-items:center">
+            <span style="font-size:13px;color:#085041">First auto-invest</span>
+            <span style="font-size:13px;font-weight:600;color:#085041">1 Jul 2026</span>
+          </div>
+        </div>
+      </div>
+
+      <div style="background:#F1EFE8;border-radius:8px;padding:10px 12px;margin-bottom:14px">
+        <p style="font-size:12px;color:#5F5E5A;line-height:1.5">&#128274; Your money is invested in a Bank Negara-regulated fund. Withdraw to your saver account anytime — no penalties, no lock-in.</p>
+      </div>
+
+      <button class="bp" onclick="goTo(3)">Confirm & start SmartGrow</button>
+    </div>
+
+    <!-- SCREEN 4: Confirmation + streak + social proof -->
+    <div class="sc" id="s3">
+      <div style="text-align:center;padding-top:20px">
+        <div class="success-ring pop-in">
+          <span style="font-size:28px">&#127793;</span>
+        </div>
+        <p style="font-size:18px;font-weight:600;color:#2C2C2A;margin-bottom:4px" class="pop-in">SmartGrow is on!</p>
+        <p style="font-size:13px;color:#5F5E5A;margin-bottom:20px">Your money starts growing on 1 July</p>
+      </div>
+
+      <!-- Streak challenge -->
+      <div style="background:#fff;border:0.5px solid #D3D1C7;border-radius:12px;padding:16px;margin-bottom:12px">
+        <p style="font-size:13px;font-weight:600;color:#2C2C2A;margin-bottom:4px">&#127942; 3-month streak bonus</p>
+        <p style="font-size:12px;color:#5F5E5A;line-height:1.45;margin-bottom:12px">Keep SmartGrow active for 3 months and earn a bonus +0.5% p.a. on your salary saver. That's extra interest just for staying consistent.</p>
+
+        <div class="streak-row">
+          <div class="streak-dot">
+            <div class="streak-circle done" style="border-color:#A100FF;background:#F5F0FF">
+              <span>&#10003;</span>
+            </div>
+            <p style="font-size:10px;color:#A100FF;font-weight:500;margin-top:2px">Today</p>
+          </div>
+          <div class="streak-line" style="margin-top:-18px"></div>
+          <div class="streak-dot">
+            <div class="streak-circle">
+              <span style="color:#B4B2A9">2</span>
+            </div>
+            <p style="font-size:10px;color:#888780;margin-top:2px">Aug</p>
+          </div>
+          <div class="streak-line" style="margin-top:-18px"></div>
+          <div class="streak-dot">
+            <div class="streak-circle">
+              <span style="color:#B4B2A9">3</span>
+            </div>
+            <p style="font-size:10px;color:#888780;margin-top:2px">Sep</p>
+          </div>
+          <div class="streak-line" style="margin-top:-18px"></div>
+          <div class="streak-dot">
+            <div class="streak-circle bonus">
+              <span>&#127881;</span>
+            </div>
+            <p style="font-size:10px;color:#1D9E75;font-weight:500;margin-top:2px">+0.5%</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Social proof -->
+      <div class="social-bar">
+        <div class="social-dots">
+          <span style="background:#EEEDFE">&#128100;</span>
+          <span style="background:#E1F5EE">&#128100;</span>
+          <span style="background:#FAEEDA">&#128100;</span>
+        </div>
+        <p style="font-size:12px;color:#5F5E5A;flex:1"><strong>12,400 people</strong> in KL started SmartGrow this month</p>
+      </div>
+
+      <!-- What happens next -->
+      <div style="background:#fff;border:0.5px solid #D3D1C7;border-radius:12px;padding:14px;margin-top:10px">
+        <p style="font-size:13px;font-weight:600;color:#2C2C2A;margin-bottom:10px">What happens next</p>
+        <div style="display:flex;gap:10px;align-items:flex-start;margin-bottom:10px">
+          <div style="width:24px;height:24px;border-radius:50%;background:#F5F0FF;display:flex;align-items:center;justify-content:center;flex-shrink:0"><span style="font-size:12px">&#128179;</span></div>
+          <div><p style="font-size:12px;color:#2C2C2A;font-weight:500">Round-ups start now</p><p style="font-size:11px;color:#888780">Every card purchase rounds up automatically</p></div>
+        </div>
+        <div style="display:flex;gap:10px;align-items:flex-start;margin-bottom:10px" id="nextSweep">
+          <div style="width:24px;height:24px;border-radius:50%;background:#F5F0FF;display:flex;align-items:center;justify-content:center;flex-shrink:0"><span style="font-size:12px">&#128176;</span></div>
+          <div><p style="font-size:12px;color:#2C2C2A;font-weight:500">First sweep on salary day</p><p style="font-size:11px;color:#888780">We'll move the excess above your floor</p></div>
+        </div>
+        <div style="display:flex;gap:10px;align-items:flex-start">
+          <div style="width:24px;height:24px;border-radius:50%;background:#F5F0FF;display:flex;align-items:center;justify-content:center;flex-shrink:0"><span style="font-size:12px">&#128200;</span></div>
+          <div><p style="font-size:12px;color:#2C2C2A;font-weight:500">Check your growth anytime</p><p style="font-size:11px;color:#888780">SmartGrow appears on your dashboard</p></div>
+        </div>
+      </div>
+
+      <div style="margin-top:18px;padding-bottom:10px">
+        <button class="bp" onclick="goTo(0)" style="background:#2C2C2A">Back to dashboard</button>
+      </div>
+    </div>
+
+    <div class="bnav">
+      <div class="bni sel"><span style="font-size:18px">&#8962;</span><span>Home</span></div>
+      <div class="bni"><span style="font-size:18px">&#8644;</span><span>Transfer</span></div>
+      <div class="bni"><span style="font-size:18px">&#9678;</span><span>Invest</span></div>
+      <div class="bni"><span style="font-size:18px">&#9647;</span><span>Cards</span></div>
+      <div class="bni"><span style="font-size:18px">&#8943;</span><span>More</span></div>
+    </div>
+  </div>
+</div>
+
+<script>
+var cur = 0;
+var methods = [true, false]; // round-ups on, sweep off
+var floor = 5000;
+var balance = 8240;
+var comfortLevel = 1;
+var comfortData = [
+  { label: '\uD83D\uDE0C Steady', desc: 'Mostly stable — small, consistent growth', rate: '4 \u2013 5% p.a.', rateNum: 0.045 },
+  { label: '\u2696\uFE0F Balanced', desc: 'A balanced mix — some growth, some stability', rate: '6 \u2013 8% p.a.', rateNum: 0.07 },
+  { label: '\uD83D\uDE80 Adventurous', desc: 'Higher growth potential with more ups and downs', rate: '8 \u2013 11% p.a.', rateNum: 0.095 }
+];
+
+var labs = ['1 / 4 \u2014 Dashboard', '2 / 4 \u2014 Set up SmartGrow', '3 / 4 \u2014 Review', '4 / 4 \u2014 Confirmed'];
+
+function goTo(n) {
+  cur = n;
+  document.querySelectorAll('.sc').forEach(function(s, i) { s.classList.toggle('a', i === n); });
+  document.querySelectorAll('.sd').forEach(function(d, i) { d.classList.toggle('a', i === n); });
+  document.getElementById('sL').textContent = labs[n];
+  if (n === 2) updateReview();
+}
+
+function toggleMethod(idx) {
+  methods[idx] = !methods[idx];
+  document.getElementById('mc' + idx).classList.toggle('on', methods[idx]);
+  document.getElementById('mt' + idx).classList.toggle('on', methods[idx]);
+  if (idx === 1) {
+    document.getElementById('sweepDetail').style.display = methods[1] ? 'block' : 'none';
+  }
+  updateProjection();
+}
+
+function adjFloor(delta) {
+  floor = Math.max(1000, Math.min(8000, floor + delta));
+  document.getElementById('floorVal').textContent = 'RM ' + floor.toLocaleString();
+  var sweep = Math.max(0, balance - floor);
+  document.getElementById('sweepAmt').textContent = '~RM ' + sweep.toLocaleString();
+  updateProjection();
+}
+
+function updateComfort() {
+  comfortLevel = parseInt(document.getElementById('comfortSlider').value);
+  var c = comfortData[comfortLevel];
+  document.getElementById('comfortDesc').textContent = c.desc;
+  document.getElementById('comfortRate').textContent = 'Target: ' + c.rate;
+  updateProjection();
+}
+
+function updateProjection() {
+  var monthly = 0;
+  if (methods[0]) monthly += 85;
+  if (methods[1]) monthly += Math.max(0, balance - floor);
+  var annual = monthly * 12;
+  var r = comfortData[comfortLevel].rateNum;
+  var returns = Math.round(annual * r * 0.5); // rough half-year average
+  var total = annual + returns;
+  document.getElementById('projTotal').textContent = 'RM ' + total.toLocaleString();
+  document.getElementById('projBreak').textContent = 'RM ' + annual.toLocaleString() + ' invested + RM ' + returns.toLocaleString() + ' returns';
+}
+
+function updateReview() {
+  var c = comfortData[comfortLevel];
+  document.getElementById('revComfort').textContent = c.label;
+  document.getElementById('revRate').textContent = c.rate;
+  document.getElementById('revRound').textContent = methods[0] ? '~RM 85/mo' : 'Off';
+  var sweepRow = document.getElementById('revSweepRow');
+  if (methods[1]) {
+    sweepRow.style.display = 'flex';
+    document.getElementById('revSweep').textContent = '~RM ' + Math.max(0, balance - floor).toLocaleString() + '/mo';
+  } else {
+    sweepRow.style.display = 'flex';
+    document.getElementById('revSweep').textContent = 'Off';
+  }
+}
+
+// Init
+updateProjection();
+</script>
+
+</body>
+</html>
